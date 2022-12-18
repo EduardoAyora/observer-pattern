@@ -36,14 +36,22 @@ const estadoDosCapaDos = createObserableObserver({
 const estadoUnoCapaTres = createObserableObserver({
   businessLogic: (observableState) => observableState + 5,
 })
+const estadoCombinadoCapaCuatro = createObserableObserver({
+  businessLogic: () =>
+    estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state,
+})
 
 estadoUnoCapaUno.subscribe(estadoUnoCapaDos)
 estadoDosCapaUno.subscribe(estadoDosCapaDos)
 estadoUnoCapaDos.subscribe(estadoUnoCapaTres)
+estadoUnoCapaDos.subscribe(estadoCombinadoCapaCuatro)
+estadoDosCapaDos.subscribe(estadoCombinadoCapaCuatro)
+estadoUnoCapaTres.subscribe(estadoCombinadoCapaCuatro)
 
 console.log(estadoUnoCapaDos.state)
 console.log(estadoDosCapaDos.state)
 console.log(estadoUnoCapaTres.state)
+console.log(estadoCombinadoCapaCuatro.state)
 
 estadoUnoCapaUno.setState(11)
 estadoDosCapaUno.setState(12)
@@ -51,3 +59,4 @@ estadoDosCapaUno.setState(12)
 console.log(estadoUnoCapaDos.state)
 console.log(estadoDosCapaDos.state)
 console.log(estadoUnoCapaTres.state)
+console.log(estadoCombinadoCapaCuatro.state)
