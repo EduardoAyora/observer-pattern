@@ -1,18 +1,18 @@
-const createObserableObserver = (initializer) => {
-  const subscribers = []
+const createObserableObserver = (initializer, observableDependencies) => {
   const state = initializer
   const businessLogic = initializer
-  return {
+  const newObserableObserver = {
     state,
+    subscribers: [],
     subscribe(subscriber) {
-      subscribers.push(subscriber)
+      this.subscribers.push(subscriber)
       this.notify()
     },
     unsubscribe(subscriber) {
-      subscribers = subscribers.filter((item) => item !== subscriber)
+      this.subscribers = this.subscribers.filter((item) => item !== subscriber)
     },
     notify() {
-      for (const subscriber of subscribers) {
+      for (const subscriber of this.subscribers) {
         subscriber.update()
       }
     },
@@ -24,39 +24,34 @@ const createObserableObserver = (initializer) => {
       this.setState(businessLogic(this))
     },
   }
+  if (Array.isArray(observableDependencies)) {
+    for (const observableDependencie of observableDependencies) {
+      observableDependencie.subscribe(newObserableObserver)
+    }
+  }
+  return newObserableObserver
 }
 
 const estadoUnoCapaUno = createObserableObserver(1)
 const estadoDosCapaUno = createObserableObserver(2)
 
 const estadoUnoCapaDos = createObserableObserver(
-  () => estadoUnoCapaUno.state + 1
+  () => estadoUnoCapaUno.state + 1,
+  [estadoUnoCapaUno]
 )
 const estadoDosCapaDos = createObserableObserver(
-  () => estadoDosCapaUno.state + 3
+  () => estadoDosCapaUno.state + 3,
+  [estadoDosCapaUno]
 )
 const estadoUnoCapaTres = createObserableObserver(
-  () => estadoUnoCapaDos.state + 5
+  () => estadoUnoCapaDos.state + 5,
+  [estadoUnoCapaDos]
 )
 const estadoCombinadoCapaCuatro = createObserableObserver(
   () =>
-    estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state
+    estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state,
+  [estadoUnoCapaDos, estadoDosCapaDos, estadoUnoCapaTres]
 )
-
-// const estadoCombinadoCapaCuatros = createObserableObserver(
-//   {
-//     businessLogic: () =>
-//       estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state,
-//   },
-//   [estadoUnoCapaTres]
-// )
-
-estadoUnoCapaUno.subscribe(estadoUnoCapaDos)
-estadoDosCapaUno.subscribe(estadoDosCapaDos)
-estadoUnoCapaDos.subscribe(estadoUnoCapaTres)
-estadoUnoCapaDos.subscribe(estadoCombinadoCapaCuatro)
-estadoDosCapaDos.subscribe(estadoCombinadoCapaCuatro)
-estadoUnoCapaTres.subscribe(estadoCombinadoCapaCuatro)
 
 console.log(estadoUnoCapaDos.state)
 console.log(estadoDosCapaDos.state)
