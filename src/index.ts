@@ -1,4 +1,4 @@
-export const createObserableObserver = (initializer, observableDependencies) => {
+export const createObserableObserver = (initializer, observableDependencies?) => {
   const state = initializer
   const businessLogic = initializer
   const newObserableObserver = {
