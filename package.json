@@ -1,6 +1,6 @@
 {
   "name": "@eduardoayora/observable-observer",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "Patrón observer extensible.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

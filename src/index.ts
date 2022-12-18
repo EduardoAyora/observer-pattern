@@ -1,3 +1,8 @@
+export interface ObservableObserver<T> {
+  state: T;
+  setState(state: any): void;
+}
+
 export const createObserableObserver = (initializer, observableDependencies?) => {
   const state = initializer
   const businessLogic = initializer
