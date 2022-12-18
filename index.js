@@ -11,15 +11,15 @@ const createObserableObserver = ({ state, businessLogic }) => {
     },
     notify() {
       for (const subscriber of subscribers) {
-        subscriber.update(this)
+        subscriber.update()
       }
     },
     setState(state) {
       this.state = state
       this.notify()
     },
-    update(observable) {
-      this.setState(businessLogic(observable.state))
+    update() {
+      this.setState(businessLogic(this))
     },
   }
 }
@@ -28,13 +28,13 @@ const estadoUnoCapaUno = createObserableObserver({ state: 1 })
 const estadoDosCapaUno = createObserableObserver({ state: 2 })
 
 const estadoUnoCapaDos = createObserableObserver({
-  businessLogic: (observableState) => observableState + 1,
+  businessLogic: (observable) => estadoUnoCapaUno.state + 1,
 })
 const estadoDosCapaDos = createObserableObserver({
-  businessLogic: (observableState) => observableState + 3,
+  businessLogic: (observable) => estadoDosCapaUno.state + 3,
 })
 const estadoUnoCapaTres = createObserableObserver({
-  businessLogic: (observableState) => observableState + 5,
+  businessLogic: (observable) => estadoUnoCapaDos.state + 5,
 })
 const estadoCombinadoCapaCuatro = createObserableObserver({
   businessLogic: () =>
