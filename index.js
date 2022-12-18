@@ -24,30 +24,30 @@ const createObserableObserver = ({ state, businessLogic }) => {
   }
 }
 
-const observable = createObserableObserver({ state: 1 })
-const observable2 = createObserableObserver({ state: 2 })
+const estadoUnoCapaUno = createObserableObserver({ state: 1 })
+const estadoDosCapaUno = createObserableObserver({ state: 2 })
 
-const observer1 = createObserableObserver({
+const estadoUnoCapaDos = createObserableObserver({
   businessLogic: (observableState) => observableState + 1,
 })
-const observer12 = createObserableObserver({
-  businessLogic: (observableState) => observableState + 5,
-})
-const observer2 = createObserableObserver({
+const estadoDosCapaDos = createObserableObserver({
   businessLogic: (observableState) => observableState + 3,
 })
+const estadoUnoCapaTres = createObserableObserver({
+  businessLogic: (observableState) => observableState + 5,
+})
 
-observable.subscribe(observer1)
-observable2.subscribe(observer2)
-observer1.subscribe(observer12)
+estadoUnoCapaUno.subscribe(estadoUnoCapaDos)
+estadoDosCapaUno.subscribe(estadoDosCapaDos)
+estadoUnoCapaDos.subscribe(estadoUnoCapaTres)
 
-console.log(observer1.state)
-console.log(observer2.state)
-console.log(observer12.state)
+console.log(estadoUnoCapaDos.state)
+console.log(estadoDosCapaDos.state)
+console.log(estadoUnoCapaTres.state)
 
-observable.setState(11)
-observable2.setState(12)
+estadoUnoCapaUno.setState(11)
+estadoDosCapaUno.setState(12)
 
-console.log(observer1.state)
-console.log(observer2.state)
-console.log(observer12.state)
+console.log(estadoUnoCapaDos.state)
+console.log(estadoDosCapaDos.state)
+console.log(estadoUnoCapaTres.state)
