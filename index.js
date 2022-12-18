@@ -1,13 +1,15 @@
-const createObserableObserver = ({ state, businessLogic }) => {
+const createObserableObserver = (initializer) => {
   const subscribers = []
+  const state = initializer
+  const businessLogic = initializer
   return {
     state,
-    subscribe(fn) {
-      subscribers.push(fn)
+    subscribe(subscriber) {
+      subscribers.push(subscriber)
       this.notify()
     },
-    unsubscribe(fn) {
-      subscribers = subscribers.filter((item) => item !== fn)
+    unsubscribe(subscriber) {
+      subscribers = subscribers.filter((item) => item !== subscriber)
     },
     notify() {
       for (const subscriber of subscribers) {
@@ -24,22 +26,30 @@ const createObserableObserver = ({ state, businessLogic }) => {
   }
 }
 
-const estadoUnoCapaUno = createObserableObserver({ state: 1 })
-const estadoDosCapaUno = createObserableObserver({ state: 2 })
+const estadoUnoCapaUno = createObserableObserver(1)
+const estadoDosCapaUno = createObserableObserver(2)
 
-const estadoUnoCapaDos = createObserableObserver({
-  businessLogic: (observable) => estadoUnoCapaUno.state + 1,
-})
-const estadoDosCapaDos = createObserableObserver({
-  businessLogic: (observable) => estadoDosCapaUno.state + 3,
-})
-const estadoUnoCapaTres = createObserableObserver({
-  businessLogic: (observable) => estadoUnoCapaDos.state + 5,
-})
-const estadoCombinadoCapaCuatro = createObserableObserver({
-  businessLogic: () =>
-    estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state,
-})
+const estadoUnoCapaDos = createObserableObserver(
+  () => estadoUnoCapaUno.state + 1
+)
+const estadoDosCapaDos = createObserableObserver(
+  () => estadoDosCapaUno.state + 3
+)
+const estadoUnoCapaTres = createObserableObserver(
+  () => estadoUnoCapaDos.state + 5
+)
+const estadoCombinadoCapaCuatro = createObserableObserver(
+  () =>
+    estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state
+)
+
+// const estadoCombinadoCapaCuatros = createObserableObserver(
+//   {
+//     businessLogic: () =>
+//       estadoUnoCapaDos.state + estadoDosCapaDos.state + estadoUnoCapaTres.state,
+//   },
+//   [estadoUnoCapaTres]
+// )
 
 estadoUnoCapaUno.subscribe(estadoUnoCapaDos)
 estadoDosCapaUno.subscribe(estadoDosCapaDos)
