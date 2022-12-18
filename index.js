@@ -24,6 +24,9 @@ const createObserableObserver = (initializer, observableDependencies) => {
       this.setState(businessLogic(this))
     },
   }
+  if (typeof initializer === 'function') {
+    newObserableObserver.update()
+  }
   if (Array.isArray(observableDependencies)) {
     for (const observableDependencie of observableDependencies) {
       observableDependencie.subscribe(newObserableObserver)
@@ -65,3 +68,37 @@ console.log(estadoUnoCapaDos.state)
 console.log(estadoDosCapaDos.state)
 console.log(estadoUnoCapaTres.state)
 console.log(estadoCombinadoCapaCuatro.state)
+
+// const createObserableObserver = (initializer: any, observableDependencies?: any[]) => {
+//   const state = initializer
+//   const businessLogic = initializer
+//   const newObserableObserver: any = {
+//     state,
+//     subscribers: [],
+//     subscribe(subscriber: any) {
+//       this.subscribers.push(subscriber)
+//       this.notify()
+//     },
+//     unsubscribe(subscriber: any) {
+//       this.subscribers = this.subscribers.filter((item: any) => item !== subscriber)
+//     },
+//     notify() {
+//       for (const subscriber of this.subscribers) {
+//         subscriber.update()
+//       }
+//     },
+//     setState(state: any) {
+//       this.state = state
+//       this.notify()
+//     },
+//     update() {
+//       this.setState(businessLogic(this))
+//     },
+//   }
+//   if (Array.isArray(observableDependencies)) {
+//     for (const observableDependencie of observableDependencies) {
+//       observableDependencie.subscribe(newObserableObserver)
+//     }
+//   }
+//   return newObserableObserver
+// }
