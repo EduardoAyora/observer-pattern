@@ -1,4 +1,4 @@
-const createObserable = (state) => {
+const createObserableObserver = ({ state, businessLogic }) => {
   const subscribers = []
   return {
     state,
@@ -18,35 +18,36 @@ const createObserable = (state) => {
       this.state = state
       this.notify()
     },
-  }
-}
-
-const createObserver = (businessLogic) => {
-  return {
-    state: null,
     update(observable) {
-      this.state = businessLogic(observable.state)
+      this.setState(businessLogic(observable.state))
     },
   }
 }
 
-const observable = createObserable(1)
-const observable2 = createObserable(2)
+const observable = createObserableObserver({ state: 1 })
+const observable2 = createObserableObserver({ state: 2 })
 
-const observer1 = createObserver((observableState) => observableState + 1)
-// const observer12 = createObserver((observableState) => observableState + 5)
-const observer2 = createObserver((observableState) => observableState + 3)
+const observer1 = createObserableObserver({
+  businessLogic: (observableState) => observableState + 1,
+})
+const observer12 = createObserableObserver({
+  businessLogic: (observableState) => observableState + 5,
+})
+const observer2 = createObserableObserver({
+  businessLogic: (observableState) => observableState + 3,
+})
 
 observable.subscribe(observer1)
 observable2.subscribe(observer2)
-// observer1.subscribe(observer12)
+observer1.subscribe(observer12)
 
 console.log(observer1.state)
 console.log(observer2.state)
-// console.log(observer2.state)
+console.log(observer12.state)
 
 observable.setState(11)
 observable2.setState(12)
 
 console.log(observer1.state)
 console.log(observer2.state)
+console.log(observer12.state)
