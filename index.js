@@ -4,6 +4,7 @@ const createObserable = (state) => {
     state,
     subscribe(fn) {
       subscribers.push(fn)
+      this.notify()
     },
     unsubscribe(fn) {
       subscribers = subscribers.filter((item) => item !== fn)
@@ -33,16 +34,16 @@ const observable = createObserable(1)
 const observable2 = createObserable(2)
 
 const observer1 = createObserver((observableState) => observableState + 1)
+// const observer12 = createObserver((observableState) => observableState + 5)
 const observer2 = createObserver((observableState) => observableState + 3)
 
 observable.subscribe(observer1)
 observable2.subscribe(observer2)
-
-observable.notify()
-observable2.notify()
+// observer1.subscribe(observer12)
 
 console.log(observer1.state)
 console.log(observer2.state)
+// console.log(observer2.state)
 
 observable.setState(11)
 observable2.setState(12)
